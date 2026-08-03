@@ -22,13 +22,13 @@
 |           **Schematic**            |
 | ![schematic](Images/schematic.png) |
 |             **Angle**              |
-|         ![angle](Images/)          |
+|   ![angle](Images/IMG_2848.JPG)    |
 |             **Front**              |
-|         ![front](Images/)          |
+|   ![front](Images/IMG_2839.JPG)    |
 |              **Back**              |
-|          ![back](Images/)          |
+|    ![back](Images/IMG_2842.JPG)    |
 |             **Inside**             |
-|         ![inside](Images/)         |
+|   ![inside](Images/IMG_2847.JPG)   |
 |              **Zine**              |
 |      ![zine](Images/zine.png)      |
 
