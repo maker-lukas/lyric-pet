@@ -15,6 +15,10 @@ also switch between different display modes, including a clock.
 The built in RGB LED reacts to the lyrics by changing the color when ever a new
 lyric line appears.
 
+**You can check the video demo here:**
+
+[youtu.be/watch?v=0fgfUwv8](https://www.youtube.com/watch?v=0fgfUwv8_pI)
+
 ## Bill of Material
 
 | Part             | Quantity | Price  | Link                                                                |
