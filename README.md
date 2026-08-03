@@ -1,6 +1,6 @@
 # lyric-pet
 
-> A small cube that displays the lyrics of the currently playing song!
+> Your Spotify lyrics right on your desk!
 
 A desktop device that displays the lyrics of your currently playing music in
 real time! Lyric Pet uses your PC as a host to detect the current Spotify song,
