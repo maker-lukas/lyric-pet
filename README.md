@@ -2,6 +2,19 @@
 
 > A small cube that displays the lyrics of the currently playing song!
 
+A desktop device that displays the lyrics of your currently playing music in
+real time! Lyric Pet uses your PC as a host to detect the current Spotify song,
+fetch synchronized lyrics and send them to the device over USB.
+
+The lyrics are displayed live on a 0.96” OLED screen as the song plays.
+
+Its is powered by a XIAO RP2040, a 0.96 OLED, and a TTP223 capacitive touch
+sensor. Tapping on the top of the device plays/pauses your music, and you can
+also switch between different display modes, including a clock.
+
+The built in RGB LED reacts to the lyrics by changing the color when ever a new
+lyric line appears.
+
 ## Bill of Material
 
 | Part             | Quantity | Price  | Link                                                                |
