@@ -30,6 +30,60 @@ lyric line appears.
 
 ---
 
+## Firmware
+
+The XIAO firmware is at [`Firmware/Device/`](Firmware/Device/). The current one is: `xiao_rp2040_lyrics_u8g2/xiao_rp2040_lyrics_u8g2.ino`
+
+### Build with arduino-cli
+
+```sh
+arduino-cli config add board_manager.additional_urls \
+  https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
+arduino-cli core update-index
+arduino-cli core install rp2040:rp2040
+arduino-cli lib install U8g2 Adafruit_NeoPixel
+
+arduino-cli compile --fqbn rp2040:rp2040:seeed_xiao_rp2040 \
+  Firmware/Device/xiao_rp2040_lyrics_u8g2
+```
+
+### Flash the .uf2
+
+1. Hold the **BOOT** button on the XIAO while plugging it into USB. It shows
+   up as a drive named `RPI-RP2`.
+2. Copy the compiled `.uf2` file onto that drive. The XIAO reboots
+   automatically and starts running the new firmware.
+
+### Run the host
+
+The computer host is at [`Firmware/Host/`](Firmware/Host/). On Linux it
+talks to Spotify using MPRIS.
+
+1. Make sure the **Spotify desktop client** is running and signed in.
+2. Set your `SP_DC` cookie in `Firmware/Host/.env` (see
+   [`.env.example`](Firmware/Host/.env.example) and the
+   [upstream guide](https://github.com/akashrchandran/syrics/wiki/Finding-sp_dc)).
+3. Install the dependencies:
+
+   ```sh
+   cd Firmware/Host
+   python -m venv .venv
+   .venv/bin/pip install -r requirements.txt
+   ```
+
+   On Linux you also need PyGObject (`python-gobject`) for the MPRIS/D-Bus
+   bindings.
+
+4. Plug in the XIAO and start the host:
+
+   ```sh
+   cd Firmware/Host
+   ./run-device-linux.sh
+   ```
+
+   The host detects the XIAO's serial port. If it can't, set `SERIAL_PORT`
+   in `.env` (e.g: `/dev/ttyACM0`).
+
 ## Overview
 
 |               Images               |
