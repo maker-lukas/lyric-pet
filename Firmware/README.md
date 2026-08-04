@@ -54,6 +54,16 @@ separate program and can be started after flashing the firmware:
 powershell -ExecutionPolicy Bypass -File .\run-device.ps1
 ```
 
+On Linux, install `python-gobject` and run the MPRIS host instead. It reads and
+controls the local Spotify client through D-Bus, so Spotify Premium and a
+developer client ID are not required:
+
+```bash
+./run-device-linux.sh
+```
+
+The `SP_DC` cookie in `.env` is still required for the lyrics source.
+
 The device host shows only the active lyric segment. Long lines are divided
 into balanced, screen-sized segments and timed proportionally by text length.
 Touching the TTP223 toggles Spotify playback. See

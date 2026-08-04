@@ -127,6 +127,13 @@ def find_serial_port() -> str | None:
 
 
 def send_text(connection: serial.Serial, text: str) -> None:
+    if (
+        os.getenv("DISPLAY_SUPPORTS_ICONS") == "1"
+        and any(symbol in text for symbol in "♪♫♬♩")
+        and not ascii_text(text).strip()
+    ):
+        connection.write(b"ICON\tMUSIC\n")
+        return
     connection.write(f"TEXT\t{ascii_text(text)}\n".encode())
 
 
@@ -137,10 +144,14 @@ def toggle_playback(spotify, playback: Playback | None) -> None:
         spotify.start_playback()
 
 
-def main(segment_builder=build_timed_segments) -> int:
+def main(segment_builder=build_timed_segments, playback_provider=None, playback_toggle=None) -> int:
     load_dotenv()
-    spotify = build_spotify_client(SPOTIFY_SCOPE)
-    spotify.auth_manager.get_access_token()
+    spotify = None
+    if playback_provider is None:
+        spotify = build_spotify_client(SPOTIFY_SCOPE)
+        spotify.auth_manager.get_access_token()
+        playback_provider = lambda: get_playback(spotify)
+        playback_toggle = lambda: toggle_playback(spotify, playback)
     lyrics_delay_ms = int(os.getenv("LYRICS_DELAY_MS", "500"))
     api_url = os.getenv("LYRICS_API_URL", "http://localhost:8080")
     sp_dc = os.getenv("SP_DC")
@@ -176,12 +187,13 @@ def main(segment_builder=build_timed_segments) -> int:
                     command = connection.readline().decode(errors="ignore").strip()
                     if command == "TOGGLE":
                         try:
-                            toggle_playback(spotify, playback)
-                        except SpotifyException as exc:
-                            print(f"Spotify rejected play/pause: {exc.msg or exc}")
+                            playback_toggle()
+                        except (SpotifyException, RuntimeError) as exc:
+                            message = exc.msg if isinstance(exc, SpotifyException) else str(exc)
+                            print(f"Playback rejected play/pause: {message or exc}")
 
                 if time.monotonic() >= next_poll:
-                    playback = get_playback(spotify)
+                    playback = playback_provider()
                     next_poll = time.monotonic() + POLL_INTERVAL_SECONDS
                     if playback and playback.track_id != track_id:
                         track_id = playback.track_id

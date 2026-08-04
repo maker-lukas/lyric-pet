@@ -1,14 +1,37 @@
 import unittest
+from unittest.mock import Mock, patch
 
 from app import LyricLine
-from device_host import ascii_text, build_timed_segments, split_for_display, wrapped_rows
+from device_host import ascii_text, build_timed_segments, send_text, split_for_display, wrapped_rows
+from device_host_linux import track_id_from_metadata
 from device_host_phrase import build_phrase_segments, estimated_syllables, split_into_phrases
 from device_host_word import build_word_segments
 
 
 class DeviceHostTests(unittest.TestCase):
+    def test_linux_mpris_metadata_provides_spotify_track_id(self):
+        metadata = {"xesam:url": "https://open.spotify.com/track/6vZCWKiXwxCG0buNfWeQD8"}
+
+        self.assertEqual(track_id_from_metadata(metadata), "6vZCWKiXwxCG0buNfWeQD8")
+
     def test_music_note_placeholders_become_blank(self):
         self.assertEqual(ascii_text("♪ ♫"), " ")
+
+    def test_u8g2_display_receives_music_icon_command(self):
+        connection = Mock()
+
+        with patch.dict("os.environ", {"DISPLAY_SUPPORTS_ICONS": "1"}):
+            send_text(connection, "♪")
+
+        connection.write.assert_called_once_with(b"ICON\tMUSIC\n")
+
+    def test_u8g2_display_keeps_ordinary_empty_sections_blank(self):
+        connection = Mock()
+
+        with patch.dict("os.environ", {"DISPLAY_SUPPORTS_ICONS": "1"}):
+            send_text(connection, "")
+
+        connection.write.assert_called_once_with(b"TEXT\t\n")
 
     def test_long_line_is_split_into_balanced_display_segments(self):
         chunks = split_for_display("this is a song and these are the lyrics for it")
